@@ -351,3 +351,4 @@ MigrationBackup/
 
 /NetCoreApi/NetCoreApi.xml
 /NetCoreApi.Infrastructure/NetCoreApi.Infrastructure.xml
+/NetCoreApi/env.json
