@@ -8,11 +8,11 @@ namespace NetCoreApi.Extensions
         {
             services.AddCors(options =>
             {
-                options.AddPolicy(DbConstraint.PolicyKey,
+                options.AddPolicy(Constraint.PolicyKey,
                     builder => builder.AllowAnyOrigin()
                     .AllowAnyMethod()
                     .AllowAnyHeader()
-                    .WithExposedHeaders(new string[] { DbConstraint.CorsAuthKey, DbConstraint.CorsAuthRefreshKey }));
+                    .WithExposedHeaders(new string[] { Constraint.CorsAuthKey, Constraint.CorsAuthRefreshKey }));
             });
         }
     }

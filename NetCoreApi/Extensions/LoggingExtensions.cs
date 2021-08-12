@@ -12,7 +12,7 @@ namespace NetCoreApi.Extensions
             var Configuration = provider.GetService<IConfiguration>();
 
             services.AddLogging(builder =>
-            builder.AddConfiguration(Configuration.GetSection(DbConstraint.Section.Log))
+            builder.AddConfiguration(Configuration.GetSection(Constraint.Section.Log))
                 .AddFilter("Microsoft", LogLevel.Warning)
                 .AddConsole()
                 .AddDebug());

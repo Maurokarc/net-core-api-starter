@@ -16,7 +16,7 @@ namespace NetCoreApi.Extensions
             var provider = services.BuildServiceProvider();
             var handler = provider.GetService<IAuthor>();
             var Configuration = provider.GetService<IConfiguration>();
-            var author = Configuration.GetSection(DbConstraint.Section.Author).Get<AuthorOptions>();
+            var author = Configuration.GetSection(Constraint.Section.Author).Get<AuthorOptions>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                     .AddJwtBearer(options =>
@@ -29,7 +29,7 @@ namespace NetCoreApi.Extensions
                         {
                             NameClaimType = ClaimTypes.NameIdentifier,
                             RoleClaimType = ClaimTypes.Role,
-                            ValidIssuer = !string.IsNullOrWhiteSpace(author?.Issuer) ? author?.Issuer : DbConstraint.DefaultIssuer,
+                            ValidIssuer = !string.IsNullOrWhiteSpace(author?.Issuer) ? author?.Issuer : Constraint.DefaultIssuer,
                             ValidateIssuer = true,
                             ValidateAudience = false,
                             ValidateLifetime = true,

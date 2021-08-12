@@ -35,7 +35,7 @@ namespace NetCoreApi.Authentications
 
         public BaseAuthor(IOptions<AuthorOptions> options)
         {
-            Issuer = !string.IsNullOrWhiteSpace(options.Value.Issuer) ? options.Value.Issuer : DbConstraint.DefaultIssuer;
+            Issuer = !string.IsNullOrWhiteSpace(options.Value.Issuer) ? options.Value.Issuer : Constraint.DefaultIssuer;
             ExpireMinutes = options.Value.ExpireMinutes.HasValue ?
                               options.Value.ExpireMinutes.Value > 0 ? options.Value.ExpireMinutes.Value : 30
                               : 30;

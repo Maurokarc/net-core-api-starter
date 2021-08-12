@@ -17,7 +17,7 @@ namespace NetCoreApi.Extensions
             var provider = services.BuildServiceProvider();
             var Configuration = provider.GetService<IConfiguration>();
             var factory = provider.GetService<ILoggerFactory>();
-            var database = Configuration.GetSection(DbConstraint.Section.Db).Get<DatabaseOptions>();
+            var database = Configuration.GetSection(Constraint.Section.Db).Get<DatabaseOptions>();
 
             var optionsBuilder = new DbContextOptionsBuilder<DbContext>()
                 .UseSqlServer(database.ConnectionString)
@@ -25,11 +25,11 @@ namespace NetCoreApi.Extensions
 
             var entryAssembly = Assembly.GetEntryAssembly();
             var assy = entryAssembly.GetReferencedAssemblies()
-                                    .Where(p => p.Name.Equals($"{DbConstraint.DefaultNamespace}.Infrastructure"))
+                                    .Where(p => p.Name.Equals($"{Constraint.DefaultNamespace}.Infrastructure"))
                                     .Select(Assembly.Load).FirstOrDefault();
 
             var interfaces = assy.GetExportedTypes()
-                            .Where(t => t.Namespace.StartsWith($"{DbConstraint.DefaultNamespace}.Infrastructure.Services") && t.IsInterface)
+                            .Where(t => t.Namespace.StartsWith($"{Constraint.DefaultNamespace}.Infrastructure.Services") && t.IsInterface)
                             .ToList();
 
             foreach (var basicType in interfaces)

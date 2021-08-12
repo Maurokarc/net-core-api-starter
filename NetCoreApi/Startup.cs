@@ -39,7 +39,7 @@ namespace NetCoreApi
 
             app.UseRouting();
             app.AddSwagger();
-            app.UseCors(DbConstraint.PolicyKey);
+            app.UseCors(Constraint.PolicyKey);
             app.UseAuthentication();
             app.UseAuthorization();
 

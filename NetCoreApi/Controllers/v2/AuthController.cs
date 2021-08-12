@@ -49,8 +49,8 @@ namespace NetCoreApi.Controllers.v2
 
             string token = _author.Generate(payload.Meta.UserId.ToString(), payload.Meta.UserName);
             string refreshToken = payload.Meta.Tokens.OrderByDescending(p => p.ExpiresAt).FirstOrDefault().RefreshToken;
-            Response.Headers.Add(DbConstraint.CorsAuthKey, token);
-            Response.Headers.Add(DbConstraint.CorsAuthRefreshKey, refreshToken);
+            Response.Headers.Add(Constraint.CorsAuthKey, token);
+            Response.Headers.Add(Constraint.CorsAuthRefreshKey, refreshToken);
 
             return NoContent();
         }
@@ -69,7 +69,7 @@ namespace NetCoreApi.Controllers.v2
             var identity = _author.GetIdentity(User);
 
             string token = _author.Generate(identity.UserId, identity.UserName);
-            Response.Headers.Add(DbConstraint.CorsAuthKey, token);
+            Response.Headers.Add(Constraint.CorsAuthKey, token);
 
             return Ok(identity);
         }

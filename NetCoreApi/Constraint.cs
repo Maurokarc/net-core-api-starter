@@ -1,6 +1,6 @@
 ﻿namespace NetCoreApi
 {
-    internal static class DbConstraint
+    internal static class Constraint
     {
         public const string PolicyKey = "CorsPolicy";
         public const string CorsAuthKey = "Authorization";

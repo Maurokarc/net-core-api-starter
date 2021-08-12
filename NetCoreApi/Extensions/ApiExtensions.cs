@@ -17,14 +17,14 @@ namespace NetCoreApi.Extensions
 
             services.AddTransient<IAuthor, JwtAuthor>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.Configure<AuthorOptions>(Configuration.GetSection(DbConstraint.Section.Author));
-            services.Configure<CryptoOptions>(Configuration.GetSection(DbConstraint.Section.Crypto));
+            services.Configure<AuthorOptions>(Configuration.GetSection(Constraint.Section.Author));
+            services.Configure<CryptoOptions>(Configuration.GetSection(Constraint.Section.Crypto));
 
             services.AddTransient(provider =>
             {
                 var author = provider.GetService<IAuthor>();
                 var Configuration = provider.GetService<IConfiguration>();
-                var options = Configuration.GetSection(DbConstraint.Section.Crypto).Get<CryptoOptions>();
+                var options = Configuration.GetSection(Constraint.Section.Crypto).Get<CryptoOptions>();
 
                 return new CryptoService(author.Issuer, options.IV, options.Salt);
             });

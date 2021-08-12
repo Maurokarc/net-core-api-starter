@@ -21,7 +21,7 @@ namespace NetCoreApi.Extensions
                 foreach (var description in provider.ApiVersionDescriptions)
                 {
                     c.SwaggerEndpoint(url: $"/swagger/{description.GroupName}/swagger.json",
-                         name: $"{DbConstraint.DefaultIssuer} API {description.GroupName}");
+                         name: $"{Constraint.DefaultIssuer} API {description.GroupName}");
                 }
             });
         }
@@ -39,16 +39,16 @@ namespace NetCoreApi.Extensions
                         name: description.GroupName,
                         info: new OpenApiInfo
                         {
-                            Title = DbConstraint.DefaultIssuer,
+                            Title = Constraint.DefaultIssuer,
                             Version = description.ApiVersion.ToString(),
-                            Description = $"{DbConstraint.DefaultIssuer} API documentation"
+                            Description = $"{Constraint.DefaultIssuer} API documentation"
                         });
                 }
 
                 c.MapType<DateTime>(() => new OpenApiSchema { Type = "string", Format = "date-time" });
 
-                string serverDoc = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"{DbConstraint.DefaultNamespace}.xml");
-                string frameworkDoc = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"{DbConstraint.DefaultNamespace}.Infrastructure.xml");
+                string serverDoc = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"{Constraint.DefaultNamespace}.xml");
+                string frameworkDoc = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"{Constraint.DefaultNamespace}.Infrastructure.xml");
 
                 if (File.Exists(serverDoc))
                 {
