@@ -6,10 +6,10 @@ using System.Net.Mime;
 
 namespace NetCoreApi.Controllers
 {
-    [Route("api/[controller]s")]
-    [ApiController]
+    [Route("api/v{version:apiVersion}/[controller]s")]
+    [ApiController, ApiVersion("1.0")]
     [Consumes(MediaTypeNames.Application.Json)]
-    [Produces(MediaTypeNames.Application.Json)]
+    [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.Xml, MediaTypeNames.Application.Soap)]
     public abstract class ApiController : ControllerBase
     {
         protected readonly ILogger _logger;

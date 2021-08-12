@@ -13,20 +13,18 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace NetCoreApi.Controllers
+namespace NetCoreApi.Controllers.v1
 {
-    [Route("[controller]")]
+    [Authorize]
     public class AuthController : ApiController
     {
         private readonly IAuthor _author;
         private readonly IAuthService _service;
-        private readonly CryptoService _crypto;
 
-        public AuthController(ILoggerFactory factory, IAuthor author, IAuthService service, CryptoService crypto) : base(factory)
+        public AuthController(ILoggerFactory factory, IAuthor author, IAuthService service) : base(factory)
         {
             _author = author;
             _service = service;
-            _crypto = crypto;
         }
 
 #if DEBUG
@@ -94,7 +92,7 @@ namespace NetCoreApi.Controllers
         /// <response code="400">帳號或密碼輸入不正確 , 驗證失敗</response>
         [AllowAnonymous]
         [HttpPost, Route("register")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(NetCoreApi.Infrastructure.Models.User))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Infrastructure.Models.User))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ResultDTO))]
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> Register([FromForm] LoginPayload dto)
@@ -115,6 +113,7 @@ namespace NetCoreApi.Controllers
         /// <summary>
         /// 登入驗證 
         /// </summary>
+        /// <param name="crypto">加解密服務</param>
         /// <param name="dto">登入相關資料</param>
         /// <returns></returns>
         /// <response code="200">回傳JWT</response>
@@ -124,9 +123,9 @@ namespace NetCoreApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ResultDTO))]
         [Consumes("multipart/form-data")]
-        public async Task<IActionResult> Login([FromForm] LoginPayload dto)
+        public async Task<IActionResult> Login([FromServices] CryptoService crypto, [FromForm] LoginPayload dto)
         {
-            var payload = await _service.Login(dto.Account, _crypto.Decrypt(dto.Password), GetIpAddress(), _author.RefreshExpireDays);
+            var payload = await _service.Login(dto.Account, crypto.Decrypt(dto.Password), GetIpAddress(), _author.RefreshExpireDays);
 
             if (!payload.IsSucceed)
             {
@@ -143,6 +142,7 @@ namespace NetCoreApi.Controllers
         /// <summary>
         /// 密碼變更
         /// </summary>
+        /// <param name="crypto">加解密服務</param>
         /// <param name="dto">密碼變更相關資料</param>
         /// <returns></returns>
         /// <response code="204">變更成功</response>
@@ -151,10 +151,10 @@ namespace NetCoreApi.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ResultDTO))]
         [Consumes("multipart/form-data")]
-        public async Task<IActionResult> ChangePassword([FromForm] ChangePasswordPayload dto)
+        public async Task<IActionResult> ChangePassword([FromServices] CryptoService crypto, [FromForm] ChangePasswordPayload dto)
         {
             var identity = _author.GetIdentity(User);
-            var result = await _service.ChangePassword(_crypto.Decrypt(dto.OldPassword), _crypto.Decrypt(dto.NewPassword), Convert.ToInt32(identity.UserId));
+            var result = await _service.ChangePassword(crypto.Decrypt(dto.OldPassword), crypto.Decrypt(dto.NewPassword), Convert.ToInt32(identity.UserId));
             if (result.IsSucceed)
             {
                 return NoContent();

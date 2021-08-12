@@ -6,7 +6,7 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace NetCoreApi.Controllers
+namespace NetCoreApi.Controllers.v1
 {
     public class UploadFileController : ApiController
     {

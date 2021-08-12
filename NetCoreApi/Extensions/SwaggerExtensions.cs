@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using System;
@@ -11,29 +12,39 @@ namespace NetCoreApi.Extensions
     {
         public static void AddSwagger(this IApplicationBuilder app)
         {
+            var serviceProvider = app.ApplicationServices;
+            var provider = serviceProvider.GetService<IApiVersionDescriptionProvider>();
+
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint(
-                    url: "/swagger/v1/swagger.json",
-                    name: $"{DbConstraint.DefaultIssuer} API v1.0.0"
-                );
+                foreach (var description in provider.ApiVersionDescriptions)
+                {
+                    c.SwaggerEndpoint(url: $"/swagger/{description.GroupName}/swagger.json",
+                         name: $"{DbConstraint.DefaultIssuer} API {description.GroupName}");
+                }
             });
         }
 
         public static void AddSwaggerDoc(this IServiceCollection services)
         {
+            var serviceProvider = services.BuildServiceProvider();
+            var provider = serviceProvider.GetService<IApiVersionDescriptionProvider>();
+
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc(
-                    name: "v1",
-                    info: new OpenApiInfo
-                    {
-                        Title = DbConstraint.DefaultIssuer,
-                        Version = "1.0.0",
-                        Description = $"{DbConstraint.DefaultIssuer} API documentation"
-                    }
-                );
+                foreach (var description in provider.ApiVersionDescriptions)
+                {
+                    c.SwaggerDoc(
+                        name: description.GroupName,
+                        info: new OpenApiInfo
+                        {
+                            Title = DbConstraint.DefaultIssuer,
+                            Version = description.ApiVersion.ToString(),
+                            Description = $"{DbConstraint.DefaultIssuer} API documentation"
+                        });
+                }
+
                 c.MapType<DateTime>(() => new OpenApiSchema { Type = "string", Format = "date-time" });
 
                 string serverDoc = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"{DbConstraint.DefaultNamespace}.xml");

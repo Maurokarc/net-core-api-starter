@@ -11,11 +11,15 @@ namespace NetCoreApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers().AddJsonOptions(p => p.JsonSerializerOptions.IgnoreNullValues = true);
+            services.AddControllers()
+                .AddJsonOptions(p => p.JsonSerializerOptions.IgnoreNullValues = true)
+                .AddXmlDataContractSerializerFormatters();
+
             services.ConfigureCors();
             services.AddLogger();
             services.ConfigureApi();
             services.ConfigureInfrastructure();
+            services.AddApiVersion();
             services.AddSwaggerDoc();
             services.SetJwtAuth();
         }
@@ -24,9 +28,7 @@ namespace NetCoreApi
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
-            {
                 app.UseDeveloperExceptionPage();
-            }
 
             // Must be first
             app.SetMiddlewares();
@@ -36,7 +38,6 @@ namespace NetCoreApi
             //app.UseHttpsRedirection();
 
             app.UseRouting();
-
             app.AddSwagger();
             app.UseCors(DbConstraint.PolicyKey);
             app.UseAuthentication();
